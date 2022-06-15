@@ -19,11 +19,15 @@
     "url": "https://github.com/NMakarevich/CRUD-API/issues"
   },
   "homepage": "https://github.com/NMakarevich/CRUD-API#readme",
+  "dependencies": {
+    "dotenv": "^16.0.1",
+    "uuid": "^8.3.2"
+  },
   "devDependencies": {
+    "@types/uuid": "^8.3.4",
     "@typescript-eslint/eslint-plugin": "^5.28.0",
     "@typescript-eslint/parser": "^5.28.0",
     "cross-env": "^7.0.3",
-    "dotenv": "^16.0.1",
     "eslint": "^8.17.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-plugin-import": "^2.26.0",
