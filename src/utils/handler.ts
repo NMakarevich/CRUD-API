@@ -1,11 +1,14 @@
 import http from 'http';
-import baseUrl from '../consts';
+import { baseUrl, errorMessages, headers } from '../consts';
 import UsersController from '../controller/usersController';
 import isValidId from './validateId';
-import isValidNewUser from './validateNewUser';
+import isValidUser from './validateUser';
+import response from './response';
 
 class Handler {
   baseUrl = baseUrl;
+
+  headers = headers;
 
   usersController = new UsersController();
 
@@ -13,8 +16,9 @@ class Handler {
     const { method, url } = req;
 
     if (!url?.startsWith(this.baseUrl)) {
-      res.writeHead(404, { 'Content-Type': 'application/json' });
-      res.end(JSON.stringify({ message: 'Invalid endpoint' }));
+      response(req, res, 404, this.headers, {
+        message: errorMessages.endpoint
+      });
       return;
     }
 
@@ -24,27 +28,70 @@ class Handler {
       } else {
         const id = url?.split('/').pop();
         if (!id || !isValidId(id)) {
-          res.writeHead(400, { 'Content-Type': 'application/json' });
-          res.end(JSON.stringify({ message: 'Invalid uuid' }));
+          response(req, res, 400, this.headers, {
+            message: errorMessages.uuid
+          });
         } else this.usersController.getUser(req, res, id).then(() => {});
       }
     }
 
     if (method === 'POST') {
+      if (url !== this.baseUrl) {
+        response(req, res, 404, this.headers, {
+          message: errorMessages.endpoint
+        });
+      }
       let data = '';
       req.on('data', (chunk) => (data += chunk));
+      req.on('error', (err) => {
+        response(req, res, 500, this.headers, {
+          message: `Error has been occurs. ${err.message}`
+        });
+      });
       req.on('end', () => {
         const user = JSON.parse(data);
-        if (!isValidNewUser(user)) {
-          res.writeHead(400, { 'Content-Type': 'application/json' });
-          res.end(
-            JSON.stringify({
-              message:
-                'Invalid body. Body must contains next fields: username - string, age - number, hobbies - string array'
-            })
-          );
-        } else this.usersController.addUser(req, res, user);
+        if (!isValidUser(user)) {
+          response(req, res, 400, this.headers, {
+            message: errorMessages.body
+          });
+        } else this.usersController.addUser(req, res, user).then(() => {});
       });
+    }
+
+    if (method === 'PUT') {
+      const id = url?.split('/').pop();
+      if (!id || !isValidId(id)) {
+        response(req, res, 400, this.headers, { message: errorMessages.uuid });
+      }
+
+      let data = '';
+      req.on('data', (chunk) => (data += chunk));
+      req.on('error', (err) => {
+        response(req, res, 500, this.headers, {
+          message: `Error has been occurs. ${err.message}`
+        });
+      });
+      req.on('end', () => {
+        const user = JSON.parse(data);
+        if (!isValidUser(user)) {
+          response(req, res, 400, this.headers, {
+            message: errorMessages.body
+          });
+        } else {
+          this.usersController
+            .updateUser(req, res, { ...user, id })
+            .then(() => {});
+        }
+      });
+    }
+
+    if (method === 'DELETE') {
+      const id = url?.split('/').pop();
+      if (!id || !isValidId(id)) {
+        response(req, res, 400, this.headers, { message: errorMessages.uuid });
+      } else {
+        this.usersController.deleteUser(req, res, id).then(() => {});
+      }
     }
   }
 }

@@ -1,20 +1,23 @@
 import http from 'http';
 import userModel from '../models/usersModel';
-import { User } from '../interface';
+import { User } from '../interfaces';
+import { headers, errorMessages } from '../consts';
+import response from '../utils/response';
+import logRequest from '../utils/logRequest';
 
 class UsersController {
   usersModel = userModel;
 
-  getUsers = async (
-    req: http.IncomingMessage,
-    res: http.ServerResponse
-  ): Promise<void> => {
+  headers = headers;
+
+  getUsers = async (req: http.IncomingMessage, res: http.ServerResponse) => {
     try {
       const users = await this.usersModel.getAllUsers();
-      res.writeHead(200, { 'Content-Type': 'appliction/json' });
-      res.end(JSON.stringify(users));
+      response(req, res, 200, this.headers, users);
     } catch (err) {
-      console.log(err);
+      response(req, res, 500, this.headers, {
+        message: `Error has been occurs during get users`
+      });
     }
   };
 
@@ -24,16 +27,18 @@ class UsersController {
     id: string
   ) => {
     try {
-      const user = await this.usersModel.getUser(id);
+      const user = (await this.usersModel.getUser(id)) as User;
       if (user) {
-        res.writeHead(200, { 'Content-Type': 'appliction/json' });
-        res.end(JSON.stringify(user));
+        response(req, res, 200, this.headers, user);
       } else {
-        res.writeHead(404, { 'Content-Type': 'appliction/json' });
-        res.end(JSON.stringify({ message: 'User is not found' }));
+        response(req, res, 404, this.headers, {
+          message: errorMessages.notFound
+        });
       }
     } catch (err) {
-      console.log(err);
+      response(req, res, 500, this.headers, {
+        message: `Error has been occurs during get user`
+      });
     }
   };
 
@@ -42,9 +47,41 @@ class UsersController {
     res: http.ServerResponse,
     user: User
   ) => {
-    const newUser = await this.usersModel.addUser(user);
-    res.writeHead(201, { 'Content-Type': 'application/json' });
-    res.end(JSON.stringify(newUser));
+    const newUser = (await this.usersModel.addUser(user)) as User;
+    response(req, res, 201, this.headers, newUser);
+  };
+
+  updateUser = async (
+    req: http.IncomingMessage,
+    res: http.ServerResponse,
+    user: User
+  ) => {
+    const updatedUser = (await this.usersModel.updateUser(user)) as User;
+    if (!updatedUser) {
+      response(req, res, 404, this.headers, {
+        message: errorMessages.notFound
+      });
+    } else {
+      response(req, res, 200, this.headers, updatedUser);
+    }
+  };
+
+  deleteUser = async (
+    req: http.IncomingMessage,
+    res: http.ServerResponse,
+    id: string
+  ) => {
+    const statusCode = await this.usersModel.deleteUser(id);
+    if (statusCode === 404) {
+      response(req, res, 404, this.headers, {
+        message: errorMessages.notFound
+      });
+    }
+    if (statusCode === 204) {
+      res.writeHead(204);
+      res.end();
+      logRequest(req, 204);
+    }
   };
 }
 
