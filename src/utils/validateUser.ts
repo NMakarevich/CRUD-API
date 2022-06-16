@@ -1,8 +1,8 @@
-const isValidNewUser = (newUser: any): boolean => {
+const isValidUser = (newUser: any): boolean => {
   // 1st check: check for keys
   const requiredFields = ['username', 'age', 'hobbies'].sort();
-  const newUserFields = Object.keys(newUser).sort();
-  if (JSON.stringify(requiredFields) !== JSON.stringify(newUserFields)) {
+  const userFields = Object.keys(newUser).sort();
+  if (JSON.stringify(requiredFields) !== JSON.stringify(userFields)) {
     return false;
   }
 
@@ -15,8 +15,8 @@ const isValidNewUser = (newUser: any): boolean => {
   const { hobbies } = newUser;
   if (hobbies.length) {
     let isString = true;
-    hobbies.forEach((hobbie: unknown) => {
-      if (typeof hobbie !== 'string') isString = false;
+    hobbies.forEach((hobby: unknown) => {
+      if (typeof hobby !== 'string') isString = false;
     });
     if (!isString) return false;
   }
@@ -24,4 +24,4 @@ const isValidNewUser = (newUser: any): boolean => {
   return true;
 };
 
-export default isValidNewUser;
+export default isValidUser;
