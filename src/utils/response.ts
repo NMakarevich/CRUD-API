@@ -7,7 +7,7 @@ const response = (
   res: http.ServerResponse,
   statusCode: number,
   headers: Record<string, string>,
-  result: User | User[] | ErrorMessage
+  result: User | User[] | ErrorMessage,
 ) => {
   res.writeHead(statusCode, headers);
   res.end(JSON.stringify(result));
