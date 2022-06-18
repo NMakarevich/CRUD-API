@@ -47,8 +47,14 @@ class UsersController {
     res: http.ServerResponse,
     user: User,
   ) => {
-    const newUser = (await this.usersModel.addUser(user)) as User;
-    response(req, res, 201, this.headers, newUser);
+    try {
+      const newUser = (await this.usersModel.addUser(user)) as User;
+      response(req, res, 201, this.headers, newUser);
+    } catch (err) {
+      response(req, res, 500, this.headers, {
+        message: 'Error has been occurs during add new user',
+      });
+    }
   };
 
   updateUser = async (
@@ -56,13 +62,19 @@ class UsersController {
     res: http.ServerResponse,
     user: User,
   ) => {
-    const updatedUser = (await this.usersModel.updateUser(user)) as User;
-    if (!updatedUser) {
-      response(req, res, 404, this.headers, {
-        message: ErrorMessages.notFound,
+    try {
+      const updatedUser = (await this.usersModel.updateUser(user)) as User;
+      if (!updatedUser) {
+        response(req, res, 404, this.headers, {
+          message: ErrorMessages.notFound,
+        });
+      } else {
+        response(req, res, 200, this.headers, updatedUser);
+      }
+    } catch (err) {
+      response(req, res, 500, this.headers, {
+        message: 'Error has been occurs during update user',
       });
-    } else {
-      response(req, res, 200, this.headers, updatedUser);
     }
   };
 
@@ -71,16 +83,22 @@ class UsersController {
     res: http.ServerResponse,
     id: string,
   ) => {
-    const statusCode = await this.usersModel.deleteUser(id);
-    if (statusCode === 404) {
-      response(req, res, 404, this.headers, {
-        message: ErrorMessages.notFound,
+    try {
+      const statusCode = await this.usersModel.deleteUser(id);
+      if (statusCode === 404) {
+        response(req, res, 404, this.headers, {
+          message: ErrorMessages.notFound,
+        });
+      }
+      if (statusCode === 204) {
+        res.writeHead(204);
+        res.end();
+        logRequest(req, 204);
+      }
+    } catch (err) {
+      response(req, res, 500, this.headers, {
+        message: 'Error has been occurs during delete user',
       });
-    }
-    if (statusCode === 204) {
-      res.writeHead(204);
-      res.end();
-      logRequest(req, 204);
     }
   };
 }
