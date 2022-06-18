@@ -1,7 +1,7 @@
 import http from 'http';
 import userModel from '../models/usersModel';
 import { User } from '../interfaces';
-import { headers, errorMessages } from '../consts';
+import { headers, ErrorMessages } from '../consts';
 import response from '../utils/response';
 import logRequest from '../utils/logRequest';
 
@@ -16,7 +16,7 @@ class UsersController {
       response(req, res, 200, this.headers, users);
     } catch (err) {
       response(req, res, 500, this.headers, {
-        message: `Error has been occurs during get users`
+        message: 'Error has been occurs during get users',
       });
     }
   };
@@ -24,7 +24,7 @@ class UsersController {
   getUser = async (
     req: http.IncomingMessage,
     res: http.ServerResponse,
-    id: string
+    id: string,
   ) => {
     try {
       const user = (await this.usersModel.getUser(id)) as User;
@@ -32,12 +32,12 @@ class UsersController {
         response(req, res, 200, this.headers, user);
       } else {
         response(req, res, 404, this.headers, {
-          message: errorMessages.notFound
+          message: ErrorMessages.notFound,
         });
       }
     } catch (err) {
       response(req, res, 500, this.headers, {
-        message: `Error has been occurs during get user`
+        message: 'Error has been occurs during get user',
       });
     }
   };
@@ -45,7 +45,7 @@ class UsersController {
   addUser = async (
     req: http.IncomingMessage,
     res: http.ServerResponse,
-    user: User
+    user: User,
   ) => {
     const newUser = (await this.usersModel.addUser(user)) as User;
     response(req, res, 201, this.headers, newUser);
@@ -54,12 +54,12 @@ class UsersController {
   updateUser = async (
     req: http.IncomingMessage,
     res: http.ServerResponse,
-    user: User
+    user: User,
   ) => {
     const updatedUser = (await this.usersModel.updateUser(user)) as User;
     if (!updatedUser) {
       response(req, res, 404, this.headers, {
-        message: errorMessages.notFound
+        message: ErrorMessages.notFound,
       });
     } else {
       response(req, res, 200, this.headers, updatedUser);
@@ -69,12 +69,12 @@ class UsersController {
   deleteUser = async (
     req: http.IncomingMessage,
     res: http.ServerResponse,
-    id: string
+    id: string,
   ) => {
     const statusCode = await this.usersModel.deleteUser(id);
     if (statusCode === 404) {
       response(req, res, 404, this.headers, {
-        message: errorMessages.notFound
+        message: ErrorMessages.notFound,
       });
     }
     if (statusCode === 204) {

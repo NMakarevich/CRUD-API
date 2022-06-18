@@ -1,5 +1,5 @@
 import http from 'http';
-import { baseUrl, errorMessages, headers } from '../consts';
+import { baseUrl, ErrorMessages, headers } from '../consts';
 import UsersController from '../controller/usersController';
 import isValidId from './validateId';
 import isValidUser from './validateUser';
@@ -17,7 +17,7 @@ class Handler {
 
     if (!url?.startsWith(this.baseUrl)) {
       response(req, res, 404, this.headers, {
-        message: errorMessages.endpoint
+        message: ErrorMessages.endpoint
       });
       return;
     }
@@ -29,7 +29,7 @@ class Handler {
         const id = url?.split('/').pop();
         if (!id || !isValidId(id)) {
           response(req, res, 400, this.headers, {
-            message: errorMessages.uuid
+            message: ErrorMessages.uuid
           });
         } else this.usersController.getUser(req, res, id).then(() => {});
       }
@@ -38,7 +38,7 @@ class Handler {
     if (method === 'POST') {
       if (url !== this.baseUrl) {
         response(req, res, 404, this.headers, {
-          message: errorMessages.endpoint
+          message: ErrorMessages.endpoint
         });
       }
       let data = '';
@@ -52,7 +52,7 @@ class Handler {
         const user = JSON.parse(data);
         if (!isValidUser(user)) {
           response(req, res, 400, this.headers, {
-            message: errorMessages.body
+            message: ErrorMessages.body
           });
         } else this.usersController.addUser(req, res, user).then(() => {});
       });
@@ -61,7 +61,7 @@ class Handler {
     if (method === 'PUT') {
       const id = url?.split('/').pop();
       if (!id || !isValidId(id)) {
-        response(req, res, 400, this.headers, { message: errorMessages.uuid });
+        response(req, res, 400, this.headers, { message: ErrorMessages.uuid });
       }
 
       let data = '';
@@ -75,7 +75,7 @@ class Handler {
         const user = JSON.parse(data);
         if (!isValidUser(user)) {
           response(req, res, 400, this.headers, {
-            message: errorMessages.body
+            message: ErrorMessages.body
           });
         } else {
           this.usersController
@@ -88,7 +88,7 @@ class Handler {
     if (method === 'DELETE') {
       const id = url?.split('/').pop();
       if (!id || !isValidId(id)) {
-        response(req, res, 400, this.headers, { message: errorMessages.uuid });
+        response(req, res, 400, this.headers, { message: ErrorMessages.uuid });
       } else {
         this.usersController.deleteUser(req, res, id).then(() => {});
       }
