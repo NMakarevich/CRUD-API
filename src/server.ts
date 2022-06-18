@@ -16,7 +16,9 @@ class Server {
       this.handler.handleReq(req, res);
     });
     this.server.listen(this.PORT, () => {
-      process.stdout.write(`Server is running on port ${this.PORT}${os.EOL}`);
+      process.stdout.write(
+        `Server is running on port ${this.PORT}. PID: ${process.pid}${os.EOL}`
+      );
     });
   }
 }
