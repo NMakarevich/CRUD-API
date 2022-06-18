@@ -17,7 +17,7 @@ class Handler {
 
     if (!url?.startsWith(this.baseUrl)) {
       response(req, res, 404, this.headers, {
-        message: ErrorMessages.endpoint
+        message: ErrorMessages.endpoint,
       });
       return;
     }
@@ -29,7 +29,7 @@ class Handler {
         const id = url?.split('/').pop();
         if (!id || !isValidId(id)) {
           response(req, res, 400, this.headers, {
-            message: ErrorMessages.uuid
+            message: ErrorMessages.uuid,
           });
         } else this.usersController.getUser(req, res, id).then(() => {});
       }
@@ -38,21 +38,21 @@ class Handler {
     if (method === 'POST') {
       if (url !== this.baseUrl) {
         response(req, res, 404, this.headers, {
-          message: ErrorMessages.endpoint
+          message: ErrorMessages.endpoint,
         });
       }
       let data = '';
       req.on('data', (chunk) => (data += chunk));
       req.on('error', (err) => {
         response(req, res, 500, this.headers, {
-          message: `Error has been occurs. ${err.message}`
+          message: `Error has been occurs. ${err.message}`,
         });
       });
       req.on('end', () => {
         const user = JSON.parse(data);
         if (!isValidUser(user)) {
           response(req, res, 400, this.headers, {
-            message: ErrorMessages.body
+            message: ErrorMessages.body,
           });
         } else this.usersController.addUser(req, res, user).then(() => {});
       });
@@ -68,14 +68,14 @@ class Handler {
       req.on('data', (chunk) => (data += chunk));
       req.on('error', (err) => {
         response(req, res, 500, this.headers, {
-          message: `Error has been occurs. ${err.message}`
+          message: `Error has been occurs. ${err.message}`,
         });
       });
       req.on('end', () => {
         const user = JSON.parse(data);
         if (!isValidUser(user)) {
           response(req, res, 400, this.headers, {
-            message: ErrorMessages.body
+            message: ErrorMessages.body,
           });
         } else {
           this.usersController

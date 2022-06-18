@@ -10,7 +10,7 @@ const logRequest = (req: http.IncomingMessage, statusCode: number) => {
     coloredStatusCode = `\x1b[33m${statusCode}\x1b[0m`;
   }
   process.stdout.write(
-    `${req.method} ${req.url} ${coloredStatusCode}${os.EOL}`
+    `${req.method} ${req.url} ${coloredStatusCode}${os.EOL}`,
   );
 };
 
