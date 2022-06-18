@@ -29,12 +29,12 @@ class UsersModel {
   updateUser(user: User): Promise<User | null> {
     return new Promise((resolve) => {
       const userToUpdate = this.users.find(
-        (userInBd) => userInBd.id === user.id
+        (userInBd) => userInBd.id === user.id,
       );
       if (!userToUpdate) resolve(null);
       else {
         const userIdx = this.users.findIndex(
-          (userInBd) => userInBd.id === user.id
+          (userInBd) => userInBd.id === user.id,
         );
         this.users[userIdx] = user;
         resolve(user);
@@ -50,7 +50,7 @@ class UsersModel {
       } else {
         this.users = [
           ...this.users.slice(0, userIdx),
-          ...this.users.slice(userIdx + 1)
+          ...this.users.slice(userIdx + 1),
         ];
         resolve(204);
       }
