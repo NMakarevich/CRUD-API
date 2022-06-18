@@ -3,25 +3,17 @@ import 'dotenv/config';
 import * as os from 'os';
 import Handler from './utils/handler';
 
-class Server {
-  PORT = process.env.SERVER_PORT || 5000;
+const PORT = process.env.SERVER_PORT || 5000;
 
-  server!: http.Server;
+const server = http.createServer((req, res) => {
+  const handler = new Handler();
+  handler.handleReq(req, res);
+});
 
-  handler!: Handler;
+server.listen(PORT, () => {
+  process.stdout.write(
+    `Server is running on port ${PORT}. PID: ${process.pid}${os.EOL}`,
+  );
+});
 
-  run() {
-    this.server = http.createServer((req, res) => {
-      this.handler = new Handler();
-      this.handler.handleReq(req, res);
-    });
-    this.server.listen(this.PORT, () => {
-      process.stdout.write(
-        `Server is running on port ${this.PORT}. PID: ${process.pid}${os.EOL}`
-      );
-    });
-  }
-}
-
-const server = new Server();
-server.run();
+export default server;
