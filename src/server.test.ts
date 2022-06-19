@@ -149,4 +149,7 @@ describe('Testing CRUD API', () => {
       expect(body.message).toEqual(ErrorMessages.notFound);
     });
   });
+  afterAll(() => {
+    server.close();
+  });
 });
