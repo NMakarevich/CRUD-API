@@ -1,0 +1,46 @@
+{
+  "name": "crud-api",
+  "version": "1.0.0",
+  "description": "This project has been created using **webpack-cli**, you can now run",
+  "main": "dist/server.js",
+  "scripts": {
+    "test": "npx jest --noStackTrace --runInBand",
+    "start:dev": "nodemon src/server.ts",
+    "start:env": "tsc && node dist/server.js",
+    "start:multy": "nodemon src/cluster.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NMakarevich/CRUD-API.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/NMakarevich/CRUD-API/issues"
+  },
+  "homepage": "https://github.com/NMakarevich/CRUD-API#readme",
+  "dependencies": {
+    "@types/supertest": "^2.0.12",
+    "dotenv": "^16.0.1",
+    "uuid": "^8.3.2"
+  },
+  "devDependencies": {
+    "@types/jest": "^28.1.2",
+    "@types/uuid": "^8.3.4",
+    "@typescript-eslint/eslint-plugin": "^5.28.0",
+    "@typescript-eslint/parser": "^5.28.0",
+    "cross-env": "^7.0.3",
+    "eslint": "^8.17.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-config-airbnb-typescript": "^17.0.0",
+    "eslint-plugin-import": "^2.26.0",
+    "jest": "^28.1.1",
+    "nodemon": "^2.0.16",
+    "prettier": "^2.7.0",
+    "supertest": "^6.2.3",
+    "ts-jest": "^28.0.5",
+    "ts-node": "^10.8.1",
+    "typescript": "^4.7.3"
+  }
+}
