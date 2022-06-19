@@ -1,4 +1,9 @@
 # CRUD API
+## Prepare for use
+1. Clone repository
+2. Checkout to `develop` branch
+3. Run `npm install` to download node_modules
+4. Run server
 ## Run server 
 - in develop mode: `npm run start:dev`
 - in production mode (build and run bundle): `npm run start:prod`
